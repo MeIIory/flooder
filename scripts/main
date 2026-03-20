@@ -1,0 +1,90 @@
+let dialog;
+let input;
+
+const delay = 150;
+const maxLen = 100;
+
+// очередь
+let queue = [];
+let timer = 0;
+
+function splitMessage(text){
+    let parts = [];
+
+    for(let i = 0; i < text.length; i += maxLen){
+        let chunk = text.substring(i, i + maxLen);
+
+        if(i + maxLen < text.length){
+            chunk += "...";
+        }
+
+        parts.push(chunk);
+    }0
+
+    return parts;
+}
+
+Events.run(Trigger.update, () => {
+
+    if(queue.length === 0) return;
+
+    timer += Time.delta;
+
+    if(timer >= delay){
+
+        timer = 0;
+
+        let msg = queue.shift();
+
+        if(msg && msg.trim().length > 0){
+            Call.sendChatMessage(msg);
+        }
+    }
+});
+
+function createDialog(){
+
+    dialog = new BaseDialog("Flooder");
+
+    input = new TextArea("");
+    input.setMessageText("Enter text... Mod by https://t.me/schizo_mell");
+
+    dialog.cont.add(input).size(500, 300).row();
+
+    dialog.cont.button("Отправить", () => {
+
+        let text = input.getText();
+        if(!text || text.trim() === "") return;
+
+        let lines = text.split("\n");
+
+        lines.forEach(line => {
+            if(line.trim().length > 0){
+                let parts = splitMessage(line.trim());
+                queue = queue.concat(parts);
+            }
+        });
+
+        dialog.hide();
+
+    }).size(200, 60);
+
+    dialog.addCloseButton();
+}
+
+Events.on(ClientLoadEvent, () => {
+
+    createDialog();
+
+    let btn = new Button();
+    btn.add("Open Flooder | t.me/schizo_mell");
+
+    btn.clicked(() => {
+        dialog.show();
+    });
+
+    btn.setSize(330, 70);
+    btn.setPosition(1500, 1150);
+
+    Vars.ui.hudGroup.addChild(btn);
+});
