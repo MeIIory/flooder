@@ -1,0 +1,12 @@
+  "name": "flooder",
+  "displayName": "Flooder",
+  "author": "https://t.me/schizo_mell",
+  "description": "Allows you to send any length message to the chat by splitting it.",
+  "version": "1.0",
+  "main": "scripts/main.js",
+  "scripts": [
+    "scripts/main.js"
+  ]
+"hidden": true,
+"minGameVersion": "155",
+
